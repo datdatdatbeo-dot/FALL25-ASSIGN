@@ -21,7 +21,8 @@
         ${message != null ? message : ""}
       </div>
 
-      <footer>© 2025 Công ty TNHH Smart HR</footer>
+      <footer>©2025 Công ty TNHH FPTU</footer>
     </div>
   </body>
 </html>
+
