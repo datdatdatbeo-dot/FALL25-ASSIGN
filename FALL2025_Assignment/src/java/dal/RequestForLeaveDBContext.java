@@ -138,5 +138,97 @@ public class RequestForLeaveDBContext extends DBContext<RequestForLeave> {
     }
     @Override
     public void delete(RequestForLeave model) { }
-    
+    public ArrayList<RequestForLeave> listPaging(int pageIndex, int pageSize) {
+    ArrayList<RequestForLeave> list = new ArrayList<>();
+    try {
+        String sql = "SELECT rid, [from], [to], reason, status, e.eid, e.ename " +
+                     "FROM RequestForLeave r " +
+                     "JOIN Employee e ON r.created_by = e.eid " +
+                     "ORDER BY r.rid OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        PreparedStatement stm = connection.prepareStatement(sql);
+        stm.setInt(1, (pageIndex - 1) * pageSize);
+        stm.setInt(2, pageSize);
+        ResultSet rs = stm.executeQuery();
+        while (rs.next()) {
+            RequestForLeave r = new RequestForLeave();
+            r.setId(rs.getInt("rid"));
+            r.setFrom(rs.getDate("from"));
+            r.setTo(rs.getDate("to"));
+            r.setReason(rs.getString("reason"));
+            r.setStatus(rs.getInt("status"));
+
+            Employee e = new Employee();
+            e.setId(rs.getInt("eid"));
+            e.setName(rs.getString("ename"));
+            r.setCreated_by(e);
+
+            list.add(r);
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(RequestForLeaveDBContext.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return list;
+}
+public int countAll() {
+    try {
+        String sql = "SELECT COUNT(*) AS total FROM RequestForLeave";
+        PreparedStatement stm = connection.prepareStatement(sql);
+        ResultSet rs = stm.executeQuery();
+        if (rs.next()) {
+            return rs.getInt("total");
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(RequestForLeaveDBContext.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return 0;
+}
+public ArrayList<RequestForLeave> listByEmployeeIdPaging(int empId, int pageIndex, int pageSize) {
+    ArrayList<RequestForLeave> list = new ArrayList<>();
+    try {
+        String sql = "SELECT r.rid, r.[from], r.[to], r.reason, r.status, e.eid, e.ename "
+                   + "FROM RequestForLeave r "
+                   + "JOIN Employee e ON r.created_by = e.eid "
+                   + "WHERE e.eid = ? "
+                   + "ORDER BY r.rid OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        PreparedStatement stm = connection.prepareStatement(sql);
+        stm.setInt(1, empId);
+        stm.setInt(2, (pageIndex - 1) * pageSize);
+        stm.setInt(3, pageSize);
+        ResultSet rs = stm.executeQuery();
+        while (rs.next()) {
+            RequestForLeave r = new RequestForLeave();
+            r.setId(rs.getInt("rid"));
+            r.setFrom(rs.getDate("from"));
+            r.setTo(rs.getDate("to"));
+            r.setReason(rs.getString("reason"));
+            r.setStatus(rs.getInt("status"));
+
+            Employee e = new Employee();
+            e.setId(rs.getInt("eid"));
+            e.setName(rs.getString("ename"));
+            r.setCreated_by(e);
+
+            list.add(r);
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(RequestForLeaveDBContext.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return list;
+}
+
+public int countByEmployeeId(int empId) {
+    try {
+        String sql = "SELECT COUNT(*) AS total FROM RequestForLeave WHERE created_by = ?";
+        PreparedStatement stm = connection.prepareStatement(sql);
+        stm.setInt(1, empId);
+        ResultSet rs = stm.executeQuery();
+        if (rs.next()) {
+            return rs.getInt("total");
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(RequestForLeaveDBContext.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return 0;
+}
+
 }
