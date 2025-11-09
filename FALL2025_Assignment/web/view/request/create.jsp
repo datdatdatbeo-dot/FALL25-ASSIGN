@@ -3,8 +3,9 @@
     Created on : Nov 5, 2025, 9:22:55 PM
     Author     : datda
 --%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<meta charset="UTF-8">
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
   <head>
@@ -15,7 +16,7 @@
   <body>
     <div class="container">
       <div class="card">
-        <h2>➕ Tạo đơn nghỉ phép mới</h2>
+        <h2>+ Tạo đơn nghỉ phép mới</h2>
         <form action="${pageContext.request.contextPath}/request/create" method="post">
           <label>Lý do nghỉ:</label><br>
           <textarea name="reason" rows="3" style="width:100%" required></textarea><br><br>

@@ -5,7 +5,9 @@
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<meta charset="UTF-8">
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,42 +17,54 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 24px;
+            background-color: #f4f7fb;
+            margin: 20px;
+        }
+        h2 {
+            color: #333;
         }
         table {
-            border-collapse: collapse;
             width: 100%;
-            margin-top: 12px;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 6px;
+            overflow: hidden;
         }
         th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
+            padding: 10px;
+            border: 1px solid #ddd;
             text-align: center;
         }
         th {
-            background-color: #f3f3f3;
+            background: #f2f2f2;
         }
         .btn {
-            background: #0078D7;
+            display: inline-block;
+            background-color: #007bff;
             color: white;
+            padding: 6px 10px;
             text-decoration: none;
-            padding: 6px 12px;
             border-radius: 5px;
-            margin-right: 6px;
+            font-size: 14px;
+            margin-right: 5px;
         }
         .btn:hover {
-            background: #005fa3;
+            background-color: #0056b3;
         }
-        .badge-success { color: green; font-weight: bold; }
         .badge-warning { color: orange; font-weight: bold; }
+        .badge-success { color: green; font-weight: bold; }
         .badge-danger { color: red; font-weight: bold; }
     </style>
 </head>
+
 <body>
+
     <jsp:include page="../util/greeting.jsp"></jsp:include>
 
+    <h2>Số đơn nghỉ phép: ${fn:length(rfls)}</h2>
+
     <div style="margin: 12px 0;">
-        <a href="${pageContext.request.contextPath}/request/list" class="btn">📋 Tất cả</a>
+        <a href="${pageContext.request.contextPath}/request/list" class="btn">📄 Tất cả</a>
         <a href="${pageContext.request.contextPath}/request/list?status=0" class="btn">🕓 Chờ duyệt</a>
         <a href="${pageContext.request.contextPath}/request/list?status=1" class="btn">✅ Đã duyệt</a>
         <a href="${pageContext.request.contextPath}/request/list?status=2" class="btn">❌ Bị từ chối</a>
@@ -58,46 +72,78 @@
     </div>
 
     <table>
-        <tr>
-            <th>ID</th>
-            <th>Người tạo</th>
-            <th>Lý do</th>
-            <th>Từ ngày</th>
-            <th>Đến ngày</th>
-            <th>Trạng thái</th>
-            <th>Người xử lý</th>
-        </tr>
-
-        <c:forEach var="r" items="${requestScope.rfls}">
+        <thead>
             <tr>
-                <td>${r.id}</td>
-                <td>${r.created_by.name}</td>
-                <td>${r.reason}</td>
-                <td>${r.from}</td>
-                <td>${r.to}</td>
-                <td>
-                    <c:choose>
-                        <c:when test="${r.status == 0}">
-                            <span class="badge-warning">🕓 Chờ duyệt</span>
-                        </c:when>
-                        <c:when test="${r.status == 1}">
-                            <span class="badge-success">✅ Đã duyệt</span>
-                        </c:when>
-                        <c:otherwise>
-                            <span class="badge-danger">❌ Bị từ chối</span>
-                        </c:otherwise>
-                    </c:choose>
-                </td>
-                <td>
-                    <c:if test="${r.processed_by ne null}">
-                        ${r.processed_by.name}
-                    </c:if>
-                    <c:if test="${r.processed_by eq null}">
-                        --
-                    </c:if>
-                </td>
+                <th>ID</th>
+                <th>Người tạo</th>
+                <th>Lý do</th>
+                <th>Từ ngày</th>
+                <th>Đến ngày</th>
+                <th>Trạng thái</th>
+                <th>Người xử lý</th>
             </tr>
-        </c:forEach>
+        </thead>
+        <tbody>
+            <c:forEach var="r" items="${rfls}">
+                <tr>
+                    <td>${r.id}</td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${r.created_by ne null}">
+                                ${r.created_by.name}
+                            </c:when>
+                            <c:otherwise>--</c:otherwise>
+                        </c:choose>
+                    </td>
+                    <td>${r.reason}</td>
+                    <td>${r.from}</td>
+                    <td>${r.to}</td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${r.status == 0}">
+                                <span class="badge-warning">Chờ duyệt</span>
+                            </c:when>
+                            <c:when test="${r.status == 1}">
+                                <span class="badge-success">Đã duyệt</span>
+                            </c:when>
+                            <c:otherwise>
+                                <span class="badge-danger">Bị từ chối</span>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${r.processed_by ne null}">
+                                ${r.processed_by.name}
+                            </c:when>
+                            <c:otherwise>--</c:otherwise>
+                        </c:choose>
+                    </td>
+                    <td>
+    <c:if test="${r.status == 0}">
+        <a href="${pageContext.request.contextPath}/request/review?id=${r.id}&action=approve" class="btn">✅ Duyệt</a>
+        <a href="${pageContext.request.contextPath}/request/review?id=${r.id}&action=reject" class="btn">❌ Từ chối</a>
+    </c:if>
+    <c:if test="${r.status != 0}">
+        <c:choose>
+            <c:when test="${r.status == 1}">Đã duyệt</c:when>
+            <c:otherwise>Bị từ chối</c:otherwise>
+        </c:choose>
+    </c:if>
+</td>
+
+                </tr>
+            </c:forEach>
+
+            <c:if test="${empty rfls}">
+                <tr>
+                    <td colspan="7" style="color: gray; font-style: italic;">
+                        Khong co don nghi phep nao
+                    </td>
+                </tr>
+            </c:if>
+        </tbody>
     </table>
+
 </body>
 </html>

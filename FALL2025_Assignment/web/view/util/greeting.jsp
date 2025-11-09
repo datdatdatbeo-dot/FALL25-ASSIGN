@@ -21,5 +21,7 @@
         <c:if test="${sessionScope.auth eq null}">
             You are not logged in yet!
         </c:if>    
+            <a href="${pageContext.request.contextPath}/logout" class="btn btn-danger">Đăng xuất</a>
+
     </body>
 </html>

@@ -15,7 +15,7 @@
 <body>
 <jsp:include page="../util/greeting.jsp"></jsp:include>
 
-<h2 style="text-align:center;margin-top:20px;">📅 Lịch nghỉ của phòng ban</h2>
+<h2 style="text-align:center;margin-top:20px;">Lịch nghỉ của phòng ban</h2>
 
 <div style="width:90%;margin:auto;margin-top:20px;">
     <table border="1" cellspacing="0" cellpadding="8" width="100%">
@@ -37,9 +37,9 @@
                 <td>${r.reason}</td>
                 <td>
                     <c:choose>
-                        <c:when test="${r.status == 0}">🕓 Chờ duyệt</c:when>
-                        <c:when test="${r.status == 1}">✅ Đã duyệt</c:when>
-                        <c:otherwise>❌ Từ chối</c:otherwise>
+                        <c:when test="${r.status == 0}">Chờ duyệt</c:when>
+                        <c:when test="${r.status == 1}">Đã duyệt</c:when>
+                        <c:otherwise>Từ chối</c:otherwise>
                     </c:choose>
                 </td>
             </tr>
