@@ -144,6 +144,23 @@
             </c:if>
         </tbody>
     </table>
+<div style="margin-top: 16px; text-align: center;">
+    <c:if test="${totalPage > 1}">
+        <c:forEach var="i" begin="1" end="${totalPage}">
+            <c:choose>
+                <c:when test="${i == pageIndex}">
+                    <span style="background:#007bff;color:white;padding:6px 10px;border-radius:5px;">${i}</span>
+                </c:when>
+                <c:otherwise>
+                    <a href="${pageContext.request.contextPath}/request/list?page=${i}" 
+                       style="margin:0 4px;text-decoration:none;padding:6px 10px;border:1px solid #007bff;border-radius:5px;">
+                       ${i}
+                    </a>
+                </c:otherwise>
+            </c:choose>
+        </c:forEach>
+    </c:if>
+</div>
 
 </body>
 </html>
