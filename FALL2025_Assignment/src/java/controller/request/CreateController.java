@@ -34,7 +34,7 @@ public class CreateController extends BaseRequiredAuthenticationController {
         EnrollmentDBContext enrollDB = new EnrollmentDBContext();
         Employee emp = enrollDB.getEmployeeByUserId(user.getId());
         if (emp == null) {
-            resp.getWriter().println("❌ Không tìm thấy employee cho user id: " + user.getId());
+            resp.getWriter().println("Khong tim thay employee cho user id: " + user.getId());
             return;
         }
 

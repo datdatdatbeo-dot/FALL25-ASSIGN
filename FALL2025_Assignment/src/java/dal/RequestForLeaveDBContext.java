@@ -90,11 +90,53 @@ public class RequestForLeaveDBContext extends DBContext<RequestForLeave> {
     }
 
     @Override
-    public RequestForLeave get(int id) { return null; }
+    public RequestForLeave get(int id) { 
+        try {
+        String sql = "SELECT rid, created_by, [from], [to], reason, status, processed_by "
+                   + "FROM RequestForLeave WHERE rid = ?";
+        PreparedStatement stm = connection.prepareStatement(sql);
+        stm.setInt(1, id);
+        ResultSet rs = stm.executeQuery();
+        if (rs.next()) {
+            RequestForLeave r = new RequestForLeave();
+            r.setId(rs.getInt("rid"));
+            r.setReason(rs.getString("reason"));
+            r.setFrom(rs.getDate("from"));
+            r.setTo(rs.getDate("to"));
+            r.setStatus(rs.getInt("status"));
+
+            Employee created = new Employee();
+            created.setId(rs.getInt("created_by"));
+            r.setCreated_by(created);
+
+            int processedId = rs.getInt("processed_by");
+            if (processedId != 0) {
+                Employee processed = new Employee();
+                processed.setId(processedId);
+                r.setProcessed_by(processed);
+            }
+            return r;
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(RequestForLeaveDBContext.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return null;
+    }
 
     @Override
-    public void update(RequestForLeave model) { }
-
+    public void update(RequestForLeave model) { 
+ try {
+        String sql = "UPDATE RequestForLeave SET status = ?, processed_by = ? WHERE rid = ?";
+        PreparedStatement stm = connection.prepareStatement(sql);
+        stm.setInt(1, model.getStatus());
+        stm.setInt(2, model.getProcessed_by().getId());
+        stm.setInt(3, model.getId());
+        stm.executeUpdate();
+    } catch (SQLException ex) {
+        Logger.getLogger(RequestForLeaveDBContext.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    }
     @Override
     public void delete(RequestForLeave model) { }
+    
 }

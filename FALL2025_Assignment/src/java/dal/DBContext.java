@@ -30,12 +30,12 @@ public abstract class DBContext<T extends BaseModel> {
 
             // Mở kết nối
             connection = DriverManager.getConnection(url, username, password);
-            System.out.println("✅ Kết nối SQL Server thành công: " + dbName);
+            System.out.println("Kết nối SQL Server thành công: " + dbName);
         } catch (ClassNotFoundException e) {
-            System.out.println("❌ Không tìm thấy JDBC Driver!");
+            System.out.println("Không tìm thấy JDBC Driver!");
             Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, e);
         } catch (SQLException e) {
-            System.out.println("❌ Lỗi kết nối SQL Server: " + e.getMessage());
+            System.out.println("Lỗi kết nối SQL Server: " + e.getMessage());
             Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, e);
         }
     }
@@ -44,7 +44,7 @@ public abstract class DBContext<T extends BaseModel> {
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
-                System.out.println("🔒 Đã đóng kết nối SQL Server.");
+                System.out.println("Đã đóng kết nối SQL Server.");
             }
         } catch (SQLException ex) {
             Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
